@@ -1,0 +1,467 @@
+<project name="ZilchConfig" default="help" basedir=".">
+	<property name="prop.file" value="build.properties" />
+	<property file="${user.home}/${prop.file}" />
+	<property file="${prop.file}" />
+
+	<property environment="env" />
+	<tstamp>
+		<format property="today.stamp" pattern="MM-dd-yyyy hh:mm" />
+	</tstamp>
+
+	<property name="version" value="${version.major}.${version.minor}.${version.build}" />
+
+	<property name="src.dir" value="ngt.config" />
+	<property name="tmp.dir" value="tmp" />
+	<property name="resources.dir" value="resources" />
+
+	<property name="server.mode" value="standalone" />
+	<property name="server.deploy.dir" value="${server.mode}/deployments" />
+	<property name="server.deploy.activemq.rar" value="activemq-ra.rar" />
+	<property name="server.deploy.activemq.war" value="amq-console.war" />
+
+	<property name="activemq-ra.rar" value="activemq-ra.rar"/>
+
+	<property name="amq-console.war" value="amq-console.5.6.0.war.zip"/>
+
+	<property name="modules.dir" value="modules/system/layers/base" />
+
+	<property name="commonmodules.dir" value="com" />
+	<property name="orgmodules.dir" value="org" />
+	<property name="default.module.dir" value="main" />
+
+	<property name="ngt.dir" value="ngt" />
+	<property name="security.dir" value="security" />
+
+	<property name="mysql.dir" value="mysql" />
+
+	<property name="apache.dir" value="apache" />
+
+	<property name="jboss.module.dir" value="jboss" />
+	<property name="seam.module.dir" value="${orgmodules.dir}/${jboss.module.dir}/seam" />
+	<property name="seam.module.location.name" value="${modules.dir}/${seam.module.dir}/${default.module.dir}" />
+	<property name="seam.lib.deploy.dir" value="../../Common/Java/lib/jboss-seam-3.1.0.Final" />
+		
+	<property name="ngtsecurity.module.location.name" value="${modules.dir}/${commonmodules.dir}/${ngt.dir}/${security.dir}/${default.module.dir}" />
+	<property name="mysql.module.location.name" value="${modules.dir}/${commonmodules.dir}/${mysql.dir}/${default.module.dir}" />
+	<property name="activemq.module.location.name" value="${modules.dir}/${orgmodules.dir}/${apache.dir}/${activemq.dir}/${default.module.dir}" />
+
+	<property name="mysql.jar" value="mysql-connector-java-5.1.25-bin.jar" />
+	<property name="hibernate.jar" value="hibernate-ehcache-4.0.1.Final.jar" />
+	<property name="ehcache.jar" value="ehcache-core-2.5.2.jar" />
+
+	<property name="activemq.deploy.jms.ds.xml" value="ironjacamar.xml" />
+
+	<property name="java.dir" value="src/java" />
+	<property name="build.dir" value="target" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+
+	<property name="ngt.security.jar.base.name" value="ngtsecurity" />
+	<property name="client.jar.name" value="${ngt.security.jar.base.name}-client.jar" />
+	<property name="impl.jar.name" value="${ngt.security.jar.base.name}.jar" />
+	<property name="client.jar" value="${jboss.module.dir}/${ngtsecurity.module.location.name}/${client.jar.name}" />
+	<property name="impl.jar" value="${jboss.module.dir}/${ngtsecurity.module.location.name}/${impl.jar.name}" />
+	<property name="standalone.configuration.dir" value="standalone/configuration" />
+	<property name="ngt.configuration.dir" value="${standalone.configuration.dir}/ngt" />
+	<property name="standalone.xml" value="${standalone.configuration.dir}/standalone.xml" />
+	
+	<path id="lib.classpath">
+		<pathelement path="${classpath}" />
+	</path>
+
+	<filelist id="release.tag.projects">
+		<file name="../../WildflyConfig/3_Code" />
+		
+	</filelist>
+
+	<target name="prepare">
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${tmp.dir}" />	
+	</target>
+
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
+
+	<target name="running.windows" if="isWindows">
+		<property name="host.name" value="${env.COMPUTERNAME}" />
+	</target>
+
+	<target name="running.unix" if="isUnix">
+		<exec executable="hostname" outputproperty="unixip" failifexecutionfails="false" />
+	    <property name="host.name" value="${unixip}" />
+	</target>
+
+	<target name="set.variables.cmc">
+		<property name="deploy.env" value="cmc" />
+		<property name="intrado.env" value="cmc" />
+		<property name="ldap.env" value="cmc" />
+		<property name="lvl3.env" value="cmc" />
+		<property name="cpe.env" value="cmc" />
+	</target>
+	
+	<target name="set.variables.dev">
+		<property name="deploy.env" value="dev" />
+		<property name="intrado.env" value="test" />
+		<property name="ldap.env" value="test" />
+		<property name="lvl3.env" value="test" />
+		<property name="cpe.env" value="test" />
+	</target>
+
+	<target name="set.variables.test">
+		<property name="deploy.env" value="test" />
+		<property name="intrado.env" value="test" />
+		<property name="ldap.env" value="test" />
+		<property name="lvl3.env" value="test" />
+		<property name="cpe.env" value="test" />
+	</target>
+
+	<target name="set.variables.uat">
+		<property name="deploy.env" value="uat" />
+		<property name="intrado.env" value="test" />
+		<property name="ldap.env" value="test" />
+		<property name="lvl3.env" value="test" />
+		<property name="cpe.env" value="test" />
+	</target>
+
+	<target name="set.variables.prod">
+		<property name="deploy.env" value="prod" />
+		<property name="intrado.env" value="prod" />
+		<property name="ldap.env" value="prod" />
+		<property name="lvl3.env" value="prod" />
+		<property name="cpe.env" value="prod" />
+	</target>
+
+	<target name="help" description="useage">
+		<echo message="type ant -p for target list" />
+	</target>
+	
+	<path id="lib.classpath">
+		<!--<fileset refid="deploylibs" />
+		<fileset refid="commonlibs" />-->
+	</path>
+	
+	<target name="build.dependancies">
+	    <!--<subant buildpath="${dto.base.dir}/build.xml" target="jar" />-->
+	</target>
+	
+	<!--
+	<target name="compile" depends="prepare">
+		<javac srcdir="${java.dir}" source="1.8" target="1.8" destdir="${classes.dir}" debug="${DEBUG}" optimize="${OPTIMIZE}" deprecation="${DEPRECATION}" classpathref="lib.classpath" >
+			<classpath refid="lib.classpath" />
+		</javac>
+	</target>-->
+
+	<target name="clean" description="Clean the local build directories">
+		<delete quiet="true" dir="${build.dir}" />
+		<delete quiet="true" dir="${tmp.dir}" />
+	</target>
+	
+	<target name="clean.dependencies" description="Clean the build directories of the dependencies">
+		<!--<delete quiet="true" dir="${dto.base.dir}/target" />-->
+	</target>
+
+	<!-- Installs for prod -->
+	<target name="install.prod.ims" depends="running.windows, running.unix, set.variables.prod" description="Install the prod configuration to JBOSS_HOME for all services, IMS">
+		<property name="deployment.ear" value="Integration Services" />
+		<antcall target="jboss.structure.overlay"/>
+		<antcall target="substitute.ims" />
+		<antcall target="install.files.ims" />
+		<antcall target="substitute.IMS.details.in.index.file" />
+	</target>
+
+	<target name="install.cmc" depends="running.windows, running.unix, set.variables.cmc" description="Install the dev configuration to JBOSS_HOME for all services">
+		<property name="deployment.ear" value="CMC" />
+		<property name="host.name" value="${cmc.host.name}" />
+		<antcall target="jboss.structure.overlay"/>
+		<antcall target="substitute" />
+		<antcall target="install.files" />
+	</target>
+	
+	<target name="install.dev" depends="running.windows, running.unix, set.variables.dev" description="Install the dev configuration to JBOSS_HOME for all services">
+		<property name="deployment.ear" value="Integration Services" />
+		<antcall target="jboss.structure.overlay"/>
+		<antcall target="substitute" />
+		<antcall target="install.files" />
+	</target>
+	
+	<target name="install.test" depends="running.windows, running.unix, set.variables.test" description="Install the test configuration to JBOSS_HOME for all services">
+		<property name="deployment.ear" value="Integration Services" />
+		<antcall target="jboss.structure.overlay"/>
+		<antcall target="substitute" />
+		<antcall target="install.files" />
+	</target>
+
+	<target name="install.uat" depends="running.windows, running.unix, set.variables.uat" description="Install the uat configuration to JBOSS_HOME for all services">
+		<property name="deployment.ear" value="Integration Services" />
+		<antcall target="jboss.structure.overlay"/>
+		<antcall target="substitute" />
+		<antcall target="install.files" />
+	</target>
+	
+	<target name="install.prod" depends="running.windows, running.unix, set.variables.prod" description="Install the prod configuration to JBOSS_HOME for all services">
+		<property name="deployment.ear" value="Integration Services" />
+		<antcall target="jboss.structure.overlay"/>
+		<antcall target="substitute" />
+		<antcall target="install.files" />
+	</target>
+
+	<!-- installing broker instance -->
+	<target name="install.activemq.dev" depends="running.windows, running.unix, set.variables.dev" description="Install ActiveMQ in dev environment">
+		<property name="broker" value="one" />
+		<antcall target="substitute.activemq" />
+		<antcall target="install.jre.activemq" />
+	</target>
+	
+	<target name="install.prod.help" description="Choose which prod install you would like">
+		<echo message="Please run either install.prod, install.activemq.legacy" />
+		<echo message="If this is a POR environment, please run either install.prod.por or install.activemq.por" />
+	</target>
+
+	<target name="substitute" depends="place.activemq.files, copy.resources">
+		<echo message="substitute in ${tmp.dir}/${standalone.xml}" />
+		<!-- standalone config -->
+		<replace file="${tmp.dir}/${standalone.xml}" propertyfile="${prop.file}">
+			<replacefilter token="@INTERNAL-CONNECTION-URL@" property="${deploy.env}.internal.ldap.url" />
+			<replacefilter token="@INTERNAL-CONNECTION-URL-NO-PORT@" property="${deploy.env}.internal.ldap.url.no.port" />
+			<replacefilter token="@INTERNAL-CONNECTION-NAME@" property="${deploy.env}.internal.ldap.connectionName" />
+			<replacefilter token="@INTERNAL-CONNECTION-PASSWORD@" property="${deploy.env}.internal.ldap.connectionPassword" />
+			<replacefilter token="@INTERNAL-USER-BASE@" property="${deploy.env}.internal.ldap.userBase" />
+			<replacefilter token="@INTERNAL-ROLE-BASE@" property="${deploy.env}.internal.ldap.roleBase" />
+			<replacefilter token="@INTERNAL-MANAGEMENT-USER-BASE@" property="${deploy.env}.internal.ldap.managementUserBase" />
+			<replacefilter token="@INTERNAL-MANAGEMENT-USER-ADVANCED-FILTER@" property="${deploy.env}.internal.ldap.managementUserAdvancedFilter" />
+			<replacefilter token="@EXTERNAL-CONNECTION-URL@" property="${deploy.env}.external.ldap.url" />
+			<replacefilter token="@EXTERNAL-CONNECTION-NAME@" property="${deploy.env}.external.ldap.connectionName" />
+			<replacefilter token="@EXTERNAL-CONNECTION-PASSWORD@" property="${deploy.env}.external.ldap.connectionPassword" />
+			<replacefilter token="@EXTERNAL-USER-BASE@" property="${deploy.env}.external.ldap.userBase" />
+			<replacefilter token="@EXTERNAL-ROLE-BASE@" property="${deploy.env}.external.ldap.roleBase" />
+			<replacefilter token="@DATABASE_HOST@" property="${deploy.env}.db.host" />
+			<replacefilter token="@DATABASE_NAME@" property="${deploy.env}.db.name" />
+			<replacefilter token="@DATABASE_USERNAME@" property="${deploy.env}.db.username" />
+			<replacefilter token="@DATABASE_PASSWORD@" property="${deploy.env}.db.password" />
+			<replacefilter token="@CONSOLE_LOG_LEVEL@" property="${deploy.env}.console.log.level" />
+			<replacefilter token="@NGT_LOG_LEVEL@" property="${deploy.env}.ngt.log.level" />
+			<replacefilter token="@DEPLOY_ENV@" value="${deploy.env}" />
+			<replacefilter token="@WORKFLOW_DATABASE_NAME@" property="${deploy.env}.workflow.db.name" />
+			<replacefilter token="@RPT_DATABASE_NAME@" value="${rpt.db.name}" />
+			<replacefilter token="@ACTIVITI_DATABASE_NAME@" value="${deploy.env}.workflow.db.name" />
+			<replacefilter token="@RPT_DATABASE_HOST@" property="${deploy.env}.db.rpt.host" />
+			<replacefilter token="@EXTERNAL_MAIL_HOST@" property="${deploy.env}.external.mail.host" />
+			<replacefilter token="@INTERNAL_MAIL_HOST@" property="${deploy.env}.internal.mail.host" />
+			<replacefilter token="@MAIL_REDIRECT@" property="${deploy.env}.order.mail.redirect.to" />
+			<replacefilter token="@FAIL_OVER_BROKER_HOST_LIST@" property="${deploy.env}.fail.over.broker.host.list" />
+		</replace>
+		
+		<replace file="${tmp.dir}/${standalone.xml}" propertyfile="${resources.dir}/messaging.properties">
+			<replacefilter token="@MESSAGING_FACTORY_NAME@" property="default.queue.connection.factory" />
+		</replace>
+		
+		<!-- unix shell config -->
+		<replace file="${tmp.dir}/bin/standalone.sh">
+			<replacefilter token="@JAVA_HOME@" value="${jboss.home}/java" />
+		</replace>
+		<replace file="${tmp.dir}/bin/jboss-cli.sh">
+			<replacefilter token="@JAVA_HOME@" value="${jboss.home}/java" />
+		</replace>
+		
+		<!-- voicemail config -->
+		<replace file="${tmp.dir}/${ngt.configuration.dir}/voicemail.properties" propertyfile="${prop.file}">
+			<replacefilter token="@VOICEMAIL_PASSWORD@" property="${deploy.env}.voicemail.password" />
+		</replace>
+
+      <!-- comcast services config -->
+      <replace file="${tmp.dir}/${ngt.configuration.dir}/services.comcast.properties" propertyfile="${prop.file}">
+         <replacefilter token="@STARS_SERVICE_ADDRESS@" property="${deploy.env}.stars.service.address" />
+         <replacefilter token="@CSP_SERVICE_ADDRESS@" property="${deploy.env}.csp.service.address" />
+         <replacefilter token="@CSP_SERVICE_USERNAME@" property="${deploy.env}.csp.service.username" />
+         <replacefilter token="@CSP_SERVICE_PASSWORD@" property="${deploy.env}.csp.service.password" />
+      </replace>
+
+		<!-- Level3 properties config -->
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/lvl3.properties" file="${resources.dir}/${lvl3.env}.level3.properties" />
+		<replace file="${tmp.dir}/${ngt.configuration.dir}/lvl3.properties" propertyfile="${prop.file}">
+			<replacefilter token="@LEVEL3SERVICES_HOST@" property="${deploy.env}.level3.new.tn.notification.subscriber.endpoint.host" />
+		</replace>
+
+		<!-- Messaging properties config -->
+		<replace file="${tmp.dir}/${ngt.configuration.dir}/messaging.properties" propertyfile="${prop.file}">
+			<replacefilter token="@MACHINE_HOSTNAME@" value="${host.name}" />
+			<replacefilter token="@ENV@" value="" />
+			<replacefilter token="@FINAL@" value=".final" />
+		</replace>
+
+		<echo message="substituting {deploy.env} ngt integrationServices files in ${basedir}/${tmp.dir} for ${deployment.ear}" />
+
+		<!-- Container port set -->
+		<replace file="${tmp.dir}/${standalone.xml}" propertyfile="${prop.file}">
+			<replacefilter token="@SERVER_PORT_SET@" property="${deploy.env}.port.set" />
+		</replace>
+		
+		<replace file="${tmp.dir}/${standalone.xml}" propertyfile="${resources.dir}/messaging.properties">
+			<replacefilter token="@MESSAGING_FACTORY_NAME@" property="default.queue.connection.factory" />
+		</replace>
+
+		<!-- ActiveMQ config -->
+		<copy tofile="${tmp.dir}/${server.deploy.dir}/${server.deploy.activemq.rar}/META-INF/ra.xml" file="${resources.dir}/activemq.config/ra.xml"  overwrite="true"/>
+		<replace file="${tmp.dir}/${server.deploy.dir}/${server.deploy.activemq.rar}/META-INF/ra.xml" propertyfile="${prop.file}">
+			<replacefilter token="@FAIL_OVER_BROKER_HOST_LIST@" property="${deploy.env}.fail.over.broker.host.list" />
+		</replace>
+		<copy tofile="${tmp.dir}/${server.deploy.activemq.war}/WEB-INF/webconsole-embedded.xml" file="${resources.dir}/activemq.config/webconsole-embedded.xml" />
+		
+		<!-- System Properties config -->
+		<replace file="${tmp.dir}/bin/standalone.bat" propertyfile="${prop.file}">
+			<replacefilter token="@NGT_ADDITIONAL_FLAGS@" value="
+				-P=${jboss.home}/${ngt.configuration.dir}/messaging.properties
+				-P=${jboss.home}/${ngt.configuration.dir}/intrado.properties
+				-P=${jboss.home}/${ngt.configuration.dir}/voicemail.properties
+				-P=${jboss.home}/${ngt.configuration.dir}/lvl3.properties
+				-P=${jboss.home}/${ngt.configuration.dir}/memory_monitor.properties
+				-P=${jboss.home}/${ngt.configuration.dir}/netx.properties
+				-P=${jboss.home}/${ngt.configuration.dir}/fraud.properties
+				-P=${jboss.home}/${ngt.configuration.dir}/services.comcast.properties
+				" />
+		</replace>
+
+		<replace file="${tmp.dir}/bin/standalone.sh" propertyfile="${prop.file}">
+			<replacefilter token="@NGT_ADDITIONAL_FLAGS@" value="
+				-P=${jboss.home}/jboss/${ngt.configuration.dir}/messaging.properties
+				-P=${jboss.home}/jboss/${ngt.configuration.dir}/intrado.properties
+				-P=${jboss.home}/jboss/${ngt.configuration.dir}/voicemail.properties
+				-P=${jboss.home}/jboss/${ngt.configuration.dir}/lvl3.properties
+				-P=${jboss.home}/jboss/${ngt.configuration.dir}/memory_monitor.properties
+				-P=${jboss.home}/jboss/${ngt.configuration.dir}/netx.properties
+				-P=${jboss.home}/jboss/${ngt.configuration.dir}/fraud.properties
+				-P=${jboss.home}/jboss/${ngt.configuration.dir}/services.comcast.properties
+				" />
+		</replace>
+	</target>
+
+	<target name="copy.resources" description="Copy resource files to temp area">
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/messaging.properties" file="${resources.dir}/messaging.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/intrado.properties" file="${resources.dir}/${intrado.env}.intrado.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/intrado.keystore.pfx" file="${resources.dir}/${intrado.env}.intrado.keystore.pfx" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/lvl3.keyStore" file="${resources.dir}/lvl3.keyStore.${lvl3.env}" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/lvl3.trustStore" file="${resources.dir}/lvl3.trustStore.${lvl3.env}" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/management.users.properties" file="${resources.dir}/management.users.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/users.properties" file="${resources.dir}/users.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/roles.properties" file="${resources.dir}/roles.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/voicemail.properties" file="${resources.dir}/voicemail.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/applePushNotificationComcastProduction.p12" file="${resources.dir}/applePushNotificationComcastProduction.p12" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/dlq_monitor.properties" file="${resources.dir}/dlq_monitor.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/fraud.properties" file="${resources.dir}/fraud.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/memory_monitor.properties" file="${resources.dir}/memory_monitor.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/netx.properties" file="${resources.dir}/${cpe.env}.netx.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/velocity.properties" file="${resources.dir}/velocity.properties" />
+		<copy tofile="${tmp.dir}/${ngt.configuration.dir}/services.comcast.properties" file="${resources.dir}/services.comcast.properties" />
+	</target>
+			
+	<target name="place.activemq.files">
+		<echo message="placing ${deploy.env} activemq-ra.rar files to ${tmp.dir}/${server.deploy.dir} for ${deployment.ear}" />
+		<unzip src="${resources.dir}/${activemq-ra.rar}" dest="${tmp.dir}/${server.deploy.dir}/${server.deploy.activemq.rar}"/>
+	</target>
+
+	<target name="unpack.jboss.to.jboss.home">
+		<echo message="Deploying jboss to ${jboss.home} for ${deployment.ear}" />
+		<unzip src="${resources.dir}/${jboss.archive}" dest="${jboss.home}" />
+	</target>
+			
+	<target name="compress.activemq.rar">
+		<move file="${tmp.dir}/${server.deploy.dir}/${server.deploy.activemq.rar}" tofile="${tmp.dir}/${server.deploy.dir}/${server.deploy.activemq.rar}.dir" />
+		<jar jarfile="${tmp.dir}/${server.deploy.dir}/${server.deploy.activemq.rar}">
+			<fileset dir="${tmp.dir}/${server.deploy.dir}/${server.deploy.activemq.rar}.dir" includes="**/*" />
+		</jar>
+		<delete dir="${tmp.dir}/${server.deploy.dir}/${server.deploy.activemq.rar}.dir" />
+	</target>
+	
+	<target name="install.files" depends="unpack.jboss.to.jboss.home">
+		<echo message="Deploying ${deploy.env} environment to ${jboss.home} for ${deployment.ear}" />
+
+		<antcall target="compress.activemq.rar" />
+
+		<!-- Copy substituted files -->
+		<copy todir="${jboss.home}" overwrite="true">
+			<fileset dir="${tmp.dir}" includes="**/*" />
+		</copy>
+
+		<chmod dir="${jboss.home}/bin" includes="*.sh" perm="a+x" />
+		<fixcrlf srcdir="${jboss.home}/bin" includes="standalone.sh,standalone.conf" />
+		
+		<antcall target="install.jre" />
+		
+		<delete dir="${tmp.dir}" />
+	</target>
+	
+
+	
+	<target name="all">
+	</target>
+		
+	<target name="install.jre" if="isUnix">
+       <echo message="Setting up co-installation of Java" />
+       <mkdir dir="${jboss.home}/jboss" />
+       <delete quiet="true" dir="${jboss.home}/java" />
+       <move todir="${jboss.home}/jboss" includeemptydirs="true">
+           <fileset dir="${jboss.home}">
+             <exclude name="jboss"/>
+             <exclude name="jboss/**"/>
+           </fileset>
+         </move>
+       <mkdir dir="${jboss.home}/java" />
+       <untar src="${resources.dir}/${jre.archive}" dest="${jboss.home}/java" />
+       <chmod dir="${jboss.home}/java/bin" includes="*" perm="a+x" />
+       <chmod dir="${jboss.home}/jboss/bin" includes="*" perm="a+x" />
+       <antcall target="dos2unix"/>
+   </target>
+	
+	<target name="dos2unix" if="isUnix">
+		<exec executable="dos2unix">
+			<arg value="${jboss.home}/jboss/bin/jboss-cli.sh"/>
+		</exec>
+	</target>
+
+    <target name="jboss.structure.overlay" description="Create the overlay for the modules to live in">
+		<copy todir="${tmp.dir}" overwrite="true">
+				<fileset dir="${basedir}/jboss" includes="**/*" />
+		</copy>
+	</target>
+	
+	<target name="env" description="Spit out the JBOSS_HOME environment entry">
+		<echo message="JBOSS_HOME=${jboss.home}" />
+	</target>
+
+	<target name="build.tarfile" description="Builds the tar file of the JbossConfig folder" depends="prepare">
+		<echo message="Copying in ${jre.storage.location}/${jre.archive} to ${resources.dir}" />
+		<copy tofile="${resources.dir}/${jre.archive}" file="${jre.storage.location}/${jre.archive}" />
+		
+		<echo message="Copying in ${jboss.storage.location}/${jboss.archive} to ${resources.dir}" />
+		<copy tofile="${resources.dir}/${jboss.archive}" file="${jboss.storage.location}/${jboss.archive}" />
+		
+		
+		<tar destfile="../${ant.project.name}-${version}.tar" longfile="gnu" >
+			<tarfileset dir="${basedir}" prefix="3_Code" />
+		</tar>
+	</target>
+
+	<target name="transfer.tar.ss" description="transfers tar file to single server support directory">
+		<echo message="Transfering wildflyconfig tar file: ${ant.project.name}-${version}.tar" />
+		<!-- Transfer the WildflyConfig file to the remote deploy server -->
+		<!-- The substituted values below are set in the Jenkins job -->
+		<scp file="..\${ant.project.name}-${version}.tar" todir="${deploy.server.username}@${tws.deploy.server.name1}:/opt/app/ngt/support/${support.directory.name}" password="${password}" verbose="true"/>
+	</target>
+	
+	<target name="transfer.tar.ms" description="transfers tar file to multiple server support directory">
+		<echo message="Transfering wildflyconfig tar file: ${ant.project.name}-${version}.tar" />
+		<!-- Transfer the WildflyConfig file to the remote deploy server -->
+		<!-- The substituted values below are set in the Jenkins job -->
+		<scp file="..\${ant.project.name}-${version}.tar" todir="${deploy.server.username}@${re.server.name1}:/opt/app/ngt/support/${support.directory.name}" password="${password}" verbose="true"/>
+		<scp file="..\${ant.project.name}-${version}.tar" todir="${deploy.server.username}@${re.server.name2}:/opt/app/ngt/support/${support.directory.name}" password="${password}" verbose="true"/>
+		<scp file="..\${ant.project.name}-${version}.tar" todir="${deploy.server.username}@${ws.server.name1}:/opt/app/ngt/support/${support.directory.name}" password="${password}" verbose="true"/>
+		<scp file="..\${ant.project.name}-${version}.tar" todir="${deploy.server.username}@${ws.server.name2}:/opt/app/ngt/support/${support.directory.name}" password="${password}" verbose="true"/>
+	</target>
+	
+	<import file="../../import-build.xml" optional="true"/>
+
+</project>
