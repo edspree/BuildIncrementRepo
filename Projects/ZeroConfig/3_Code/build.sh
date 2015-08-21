@@ -5,14 +5,13 @@ WORKSPACE="."
 BUILDDIR=$WORKSPACE/build
 TMSRC="$WORKSPACE/tm"
 PACKAGE="ZeroConfig"
-BUILD_PROPERTIES="build.properties"
+BUILD_PROPERTIES="/opt/app/ngt/support/.jenkins/workspace/ZeroConfig/Projects/ZeroConfig/3_Code/build.properties"
 
 if [ -f /etc/profile ]; then
     . /etc/profile
 fi
 
 cd $WORKSPACE
-#/usr/bin/git clone https://github.com/edspree/BuildIncrementRepo.git
 /usr/bin/git checkout $BRANCH
 #fi
 
