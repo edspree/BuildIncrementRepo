@@ -12,7 +12,7 @@ if [ -f /etc/profile ]; then
 fi
 
 cd $WORKSPACE
-/usr/bin/git clone https://github.com/edspree/BuildIncrementRepo.git
+#/usr/bin/git clone https://github.com/edspree/BuildIncrementRepo.git
 /usr/bin/git checkout $BRANCH
 #fi
 
