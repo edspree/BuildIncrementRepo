@@ -11,10 +11,6 @@ if [ -f /etc/profile ]; then
     . /etc/profile
 fi
 
-cd $WORKSPACE
-/usr/bin/git checkout $BRANCH
-#fi
-
 BUILD_VARIABLE="version.build"
 VERSION_BUILD=$(/bin/grep $BUILD_VARIABLE $BUILD_PROPERTIES| /bin/grep -v version.major)
 BUILD_NUMBER=$(cut -d'=' -f1)
