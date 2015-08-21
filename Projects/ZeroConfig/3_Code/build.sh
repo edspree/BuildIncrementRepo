@@ -21,7 +21,7 @@ echo $NEW_BUILD_NUMBER
 NEW_VERSION_BUILD="$BUILD_VARIABLE=$NEW_BUILD_NUMBER"
 echo $NEW_VERSION_BUILD
 sed -i.bak s/$VERSION_BUILD/$NEW_VERSION_BUILD/g $BUILD_PROPERTIES
-echo $(cat $BUILD_PROPERTIES)
+
 echo "Adding build.properties to staging"
 /usr/bin/git add $BUILD_PROPERTIES
 
