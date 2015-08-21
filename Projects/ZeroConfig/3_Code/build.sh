@@ -14,7 +14,7 @@ fi
 BUILD_VARIABLE="version.build"
 VERSION_BUILD=$(/bin/grep $BUILD_VARIABLE $BUILD_PROPERTIES| /bin/grep -v version.major)
 echo $VERSION_BUILD
-BUILD_NUMBER=echo $VERSION_BUILD | cut -d'=' -f 1
+BUILD_NUMBER=echo $VERSION_BUILD | cut -d \= -f 1
 echo $BUILD_NUMBER
 NEW_BUILD_NUMBER=$BUILD_NUMBER + 1;
 echo $NEW_BUILD_NUMBER
