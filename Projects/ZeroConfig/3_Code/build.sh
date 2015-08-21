@@ -22,7 +22,10 @@ NEW_VERSION_BUILD="$BUILD_VARIABLE=$NEW_BUILD_NUMBER"
 echo $NEW_VERSION_BUILD
 sed -i.bak s/$VERSION_BUILD/$NEW_VERSION_BUILD/g $BUILD_PROPERTIES
 
-echo "Attempting to commit build.properties"
+echo "Adding build.properties to staging"
+/usr/bin/git add $build.properties
+
+echo "Commit build.properties"
 /usr/bin/git commit -m "Incremented build version number"
 
 echo "Attempting to push build.properties"
