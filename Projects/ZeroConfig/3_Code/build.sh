@@ -25,11 +25,7 @@ echo $NEW_VERSION_BUILD
 sed -i.bak s/$VERSION_BUILD/$NEW_VERSION_BUILD/g $BUILD_PROPERTIES
 
 echo "Attempting to commit build.properties"
-/usr/bin/git commit $BUILD_PROPERTIES
+/usr/bin/git commit -m "Incremented build version number"
 
 echo "Attempting to push build.properties"
-/usr/bin/git push $BUILD_PROPERTIES
-
-
-
-
+/usr/bin/git push
