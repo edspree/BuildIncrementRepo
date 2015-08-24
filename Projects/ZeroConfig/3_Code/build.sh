@@ -29,4 +29,4 @@ echo "Commit build.properties"
 /usr/bin/git commit -m "Incremented build version number"
 
 echo "Attempting to push build.properties"
-/usr/bin/git push https://github.com/edspree/BuildIncrementRepo.git --force --all
+/usr/bin/git push https://github.com/edspree/BuildIncrementRepo.git --force
