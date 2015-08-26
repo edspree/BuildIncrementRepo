@@ -13,6 +13,7 @@ fi
 
 BUILD_VARIABLE="version.build"
 VERSION_BUILD=$(/bin/grep $BUILD_VARIABLE $BUILD_PROPERTIES| /bin/grep -v version.major)
+echo $BUILD_NUMBER
 echo $VERSION_BUILD
 CURRENT_BUILD_NUMBER=$(echo $VERSION_BUILD | cut -d \= -f 2)
 echo $CURRENT_BUILD_NUMBER
